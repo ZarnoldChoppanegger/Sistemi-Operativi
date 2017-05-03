@@ -17,10 +17,15 @@ La sintassi tipica di un comando è:
 **Esempi:**
 
 ``> date``
+
 ``> who``
+
 ``> uname -a``
+
 ``> ps``
+
 ``> ps ef``
+
 ``\_`` indica un sottoprocesso
 
 ### LS
