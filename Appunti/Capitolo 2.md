@@ -2,10 +2,11 @@
 
 ## Interprete dei comandi
 
-L'interprete dei comandi (che in alcuni sistemi è integrato nel kernel) è un programma speciale che si avvia nonappena un utente effettua il login. Se il sistema permette una scelta dell'interprete dei comandi esso viene definito *shell*. La funzionalità principale dell'interprete dei comandi è quello di interpretare i comandi inseriti dall'utente. Questi ultimi possono essere implementati in due modi:
+L'interprete dei comandi (che in alcuni sistemi è integrato nel kernel) è un programma speciale che si avvia non appena un utente effettua il login. Se il sistema permette una scelta dell'interprete dei comandi esso viene definito *shell*. La funzionalità principale dell'interprete dei comandi è quello di interpretare i comandi inseriti dall'utente. Questi ultimi possono essere implementati in due modi:
 
 * Come in MS-DOS. Lo stesso interprete comandi contiene il codice da eseguire e che invocherà le idonee chiamate di sistema. In questo caso il numero di comandi disponibili ha un impatto sulla dimensione dell'interprete.
 * Come in UNIX. Ogno comando si riferisce a un programma di sistema quindi quando viene eseguito, l'interprete cercherà il programma associato e lo eseguirà con i parametri inseriti. Esempio:
+  
   Il comando `rm file.txt` cerca un file chiamato rm, lo carica in memoria e lo esegue con il parametro `file.txt`.
   
 ## Sistemi Monolitici
