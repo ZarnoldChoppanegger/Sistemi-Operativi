@@ -1,6 +1,6 @@
 # Capitolo 3
 
-## Processi
+# Processi
 
 > Un processo è un programma in esecuzione.
 
@@ -71,3 +71,39 @@ Inoltre possiamo differenziare i processi in:
 Lo scheduler a lungo termine deve assicurarsi che il numero di processi I/O Bound e CPU Bound sia quasi uguale all'interno del sistema in modo da davere esecuzioni più omogenee possibili.
 
 Oltre a questi due scheduler possiamo anche inserirne uno a medio termine che si occupa di togliere i processi dalla memoria principale per ridurre il grado di multiprogrammazione, questa operazione si chiama **swapping** (si fa nel capitolo 8).
+
+### Creazione di un processo
+
+Durante la propria esecuzione, un processo può creare numerosi nuovi processi. Il processo creante si chiama **padre**, il processo creato si chiama **figlio**. I processi figlio possono a loro volta creare altri processi, creando così un **albero** di processi. La maggiorparte dei sistemi operativi identifica i processi tramite un intero identificativo chiamato **PID** (Process Identifier). Il processo `init` è il primo processo ad essere caricato e ha sempre il PID uguale a 1. Da questo processo si ramificano successivamente tutti i processi utente.
+
+Quando viene creato un figlio, esso dovrà attingere risorse. Può farlo in due modi:
+
+* Ottenerle direttamente dal sistema operativo.
+* Ottenerle come un sottoinsieme delle risorse del processo padre.
+
+Quest'ultimo è più consigliabile perché permette al genitore di creare un numero limitato di figli e di non attingere da tutte le risorse del sistema.
+
+Quando un processo ne crea uno nuovo, dal lato dell'esecuzione ci sono due possibilità:
+
+1. Il processo genitore esegue in maniera concorrente con il processo figlio.
+2. Il processo genitore attende la fine di tutti o di uno dei processi figli.
+
+Ci sono altre due possibilità per quanto riguarda lo spazio degli indirizzi dei processi figli:
+
+1. Il figlio è una copia del processo genitore (stessi dati e programmi del genitore).
+2. Al figlio viene caricato un nuovo programma da eseguire.
+
+Un nuovo processo si crea tramite la chiamata di sistema `fork()`. Permette al genitore di comunicare con facilità con i processi figli perché la `fork()` assegna PID = 0 al processo figlio e al processo padre assegna il PID del figlio in modo da distinguere perfettamente i processi padre da quelli figlio, ritorna un valore minore di 0 se ci sono stati errori nella creazione del nuovo processo.
+
+### Terminazione processi
+
+Un processo termina quando finisce l'esecuzione dell'ultima istruzione e richiede di essere cancellato dal sistema tramite la chiamata `exit()`. Se il processo che termina è un processo figlio sposta tutte le sue informazioni nel processo genitore che è pronto ad accettarle se ha eseguito la chiamata `wait()`, una volta fatta questa operazione tutte le risorse del processo vengono eliminate dal sistema operativo. 
+
+> Un processo può essere terminato da un altro processo a patto che l'altro processo sia suo genitore
+
+Un processo che è terminato ma il cui genitore non ha ancora eseguito la chiamata `wait()` viene chiamato processo **zombie** in quanto tutte le risorse di esso sono ancora nel sistema. Un processo rimane, di solito, in questo stato per poco tempo perché i processi genitori chiamano la `wait()` periodicamente rilasciando tutte le risorse di questi processi.
+
+Se un genitore termina la sua esecuzione prima della fine dei processi figli essi rimangono orfani. Su *Linux* e *UNIX* i processi orfani vengono assegnati come figli al processo `init` che chiama la `wait()` periodicamente rilasciando le risorse.
+
+## Comunicazione tra processi
+
