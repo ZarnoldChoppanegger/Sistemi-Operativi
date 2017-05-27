@@ -107,3 +107,129 @@ Se un genitore termina la sua esecuzione prima della fine dei processi figli ess
 
 ## Comunicazione tra processi
 
+I processi che vengono eseguiti concorrentemente nel sistema possono essere *indipendenti* o *cooperanti*. 
+
+* I primi sono tutti quei processi che non devono condividere alcun dato con altri processi e che non possono influenzarli o esserne influenzati. 
+* I secondi sono quelli che devono condividere dati e che possono influenzare o essere influezati da altri processi.
+
+Ci sono diversi vantaggi nell'avere processi che cooperano:
+
+* **Condivisione d'informazioni:** In quanto più utenti vogliono accedere, per esempio, allo stesso file contemporaneamente e quindi non aspettare la fine di alcuni processi per poterci accedere.
+* **Velocizzazione del calcolo:** Con la condivisione dei dati i processi possono essere suddivisi in sotto attività che vengono assegnate a processi diversi, in modo da velocizzarne il calcolo.
+* **Convenienza:** Perché anche un solo utente ha la necessità di compiere più attività contemporaneamente.
+* **Modularità:** Stessa cosa della velocizzazione del calcolo. Suddiviso i processi i moduli.
+
+Per ottenere la cooperazione dei processi è necessario un meccanismo di *comunicazione tra processi* (**IPC**, *interprocess communication*). Esistono due possibilità: a **memoria condivisa** e tramite **scambio di messaggi**. 
+
+Nel modello a memoria condivisa viene ritagliato un pezzo di memoria a cui possono accedere tutti processi permettendogli di comunicare scrivendo e leggendo da questa zona di memoria. Questo modello può essere più veloce del modello a scambio di messaggi perché necessita del kernel molto sporadicamente rispetto all'altro modello.
+
+Nel modello a scambio di messaggi le informazioni vengono condivise tramide dei messaggi, appunto. È utile per piccole quantità di informazione ma è più lento perché i messaggi vengono generati tramite chiamate di sistema che necessitano l'intromissione del kernel impegnandolo.
+
+### Sistemi a memoria condivisa - Produttore/Consumatore
+
+I processi comunicanti allocano una memoria condivida nella quale scrivono e leggono dati. Questo sistema viene illustrato tramite il problema del **produttore/consumatore** dove un processo produce e un altro consuma. Per risolvere questo problema con la memoria condivisa viene creato un buffer condiviso tra i due processi, essi devono essere perfettamente sincronizzati in modo da non permettere al consumatore di consumare un prodotto non ancora creato. 
+
+Con un buffer **limitato** il consumatore deve attendere se il buffer è vuoto e il produttore deve attendere se il buffer è pieno. Esempio in C:
+
+``` C
+shared int Buffer[n];
+shared int in = 0, out = 0;
+
+// Produttore
+while(1){
+  while((in + 1) % n == out) { }
+  // Se il buffer è pieno il produttore
+  // in questo loop e aspetta che il
+  // consumatore lo svuoti
+  Buffer[in] = Dato(); // Qui produce
+  in = (in + 1) % n;
+}
+
+// Consumatore
+while(1){
+  while(in == out) { }  // Se il buffer è vuoto il consumatore aspetta
+  Dato = Buffer[out];
+  out = (out + 1) % n;
+}
+
+```
+
+Questo metodo ammette un massimo di n - 1 elementi contemporaneamente presenti nel buffer.
+
+### Sistemi a scambio messaggi - Send/Receive/Mailbox
+
+Lo scambio di messaggi permette a due o più processi di comunicare tra di loro senza la necessità di avere memoria condivisa. Questo meccanismo richiede due chiamate primitive ovvero `send()` e `receive()`. I messaggi possono avere lunghezza fissa o variabile, nel primo caso si avrà un'implementazione più facile ma sarà più difficile programmarvici. Nel secondo caso avremo un'implementazione più complicata ma la programmazione sarà più facile.
+
+Per permettere a due processi di comunicare serve un **canale di comunicazione** che è realizzabile in molteplici modi:
+
+* Comunicazione diretta e indiretta.
+* Comunicazione sincrona e asincrona.
+* Gestione automatica o esplicita del buffer.
+
+#### Naming
+
+**Comunicazione diretta**
+
+Per comunicare i processi devono conosce il nome del ricevente e del mittente. Le operazioni `send()` e `receive()` saranno implementate così:
+
+``` C
+send(P, message)    // Invia al processo P il messaggio
+receive(Q, message) // Riceve dal processo Q il messaggio
+```
+Con questo schema si hanno queste caratteristiche:
+
+* Tra una coppia di processi può esserci solo un canale di comunicazione e i processi devono conoscere la reciproca idendità.
+* Un canale è associato a due soli processi.
+* Esiste esattamente un canale tra ciascuna coppia di processi.
+
+Questo schema è *simmetrico* nell'indirizzamento. Esiste anche quello *asimmetrico* dove solamente il mittende deve conoscere l'identità del processo a cui manda il messaggio mentre il ricevente avrà un id che verrà sostituito rispetto al processo che sta mandando il messaggio.
+
+È un implementazione molto sconveniente visto che, se viene cambiato il nome di un processo, esso dovrà essere modificato in tutto il programma.
+
+**Comunicazione indiretta**
+
+Con la comunicazione indiretta i messaggi vengono inviati a una **mailbox** dalla quale i processi potranno, appunto, inviare e ricevere messaggi. Con questa implementazione non è necessario conosce il nome di alcun processo ma solo il nome della mailbox, la `send()` e la `receive()` sono implementate così:
+
+``` C
+send(A, message)    // Stessa cosa di sotto
+receive(A, message) // Dove A è il nome della mailbox
+```
+
+Questo sistema ha queste caratteristiche:
+
+* Tra una coppia di processi si stabilisce un canale solo se condividono una mailbox.
+* Un canale può essere associato a più processi.
+* Tra ogni coppia di processi possono esserci molteplici canali, ognuno corrispondente a una mailbox diversa.
+
+Il problema adesso è: se tre processi P1, P2 e P3 condividono una mailbox, P1 gli manda un messaggio e P2 e P3 vogliono leggerlo, quale dei due processi leggerà il messaggio? Ci sono diverse soluzioni a questo problema:
+
+* Si fa in modo che un canale sia associato a soli due processi.
+* Si cerca di eseguire la `receive()` solo da un processo per volta.
+* Si lascia scegliere al sistema operativo (tipicamente tramite un algoritmo *round robin* che assegnerà il messaggio ai processi tramite un turno prestabilito).
+
+---
+
+Una mailbox può essere associata a un processo o al sistema operativo. Se è associata al processo, esso è il proprietario e può solo ricevere messaggi mentre gli utenti possono solo mandarli. Facendo così non si ha il problema esposto sopra ma se il processo termina la mailbox viene elminata insieme ai messaggi che contiene.
+
+Se invece la mailbox è associata al sistema operativo questo problema non si pone in quanto ha vita autonoma. Con questo metodo mi è permesso anche di creare nuove mailbox, inviare e ricevere tramite la mailbox e rimuovere una mailbox.
+
+---
+
+#### Sincronizzazione
+
+La `send()` e la `receive()` possono essere sincrone (bloccanti) o asincrone (non bloccanti):
+
+* `send()` sincrona quando il processo che invia il messaggio si blocca nell'attesa che sia ricevuto.
+* `send()` asincrona se, una volta mandato il messaggio, il processo continua la sua esecuzione.
+* `receive()` sincrona quando il processo che riceve sta fermo fino a quando non riceve un messaggio.
+* `receive()` asincrona permette di ricevere messaggi o valori nulli (non sta mai fermo).
+
+Tramite la `send()` e la `receive()` bloccanti viene risolto facilmente il problema del produttore/consumatore.
+
+#### Code di messaggi
+
+Tutti i messaggi scambiati tra i processi risiedono in code temporanee, ne esistono tre tipi con capacità diverse:
+
+* **Capacità zero:** La coda ha capacità zero quindi non può contenere alcun messaggio in attesa. Se un messaggio è inviato dal mittente esso si ferma in attesa che venga letto.
+* **Capacità finita:** La coda ha una lunghezza n predefinita quindi può contenere n messaggi in attesa. Se la coda non è vuota e un messaggio è inviato dal trasmittente esso può continuare a inviarne altri finchè la coda non è piena, in quel caso si ferma.
+* **Capacità infinita:** Il trasmittente non si ferma mai (povero).
