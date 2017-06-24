@@ -21,7 +21,7 @@ Vi è un insieme [P1,---,Pn] e un altro [R1,---,Rn] che indicano rispettivamente
 
 Si può dimostrare che se nel grafo non è presente alcun ciclo allora siamo sicuri che non è presente alcuno stallo, viceversa se c'è un ciclo **potrebbe** esserci uno stallo. Quest'ultima affermazione dipende da quante istanze ha una risorsa.
 
-![alt text](http://imgur.com/a/b0qZD "Grafo circolare con e senza stallo")
+![alt text](http://i.imgur.com/iRbyWjd.png "Grafo circolare con e senza stallo")
 
 
 ## Metodi per la gestione degli stalli
