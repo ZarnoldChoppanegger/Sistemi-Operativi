@@ -29,7 +29,7 @@ while (true){
 ```
 Se eseguo questo codice concorrentemente e c'è prelazione durante l'esecuzione di un decremento o incremento del contatore, posso perdere la semantica di queste due esecuzione (es. 5+1-1 = 6) in quanto dipende dall'ordine di esecuzione delle istruzioni. In questo caso vado in contro a una **Race Condition**.
 
-## Problema della sezione critica
+## Problema della sezione critica 
 
 > La sezione critica di un processo è la sua zona di codice dove modifica o accede a variabili condivise con altri processi.
 
