@@ -12,7 +12,7 @@ Un processo contiene sempre:
 È bene puntualizzare che programma e processo sono due cose completamente diverse. Un programma è un'entità *passiva* (un file su disco) mentre il processo è un'entità *attiva* (con program counter e risorse associate). Possono infatti esistere due processi dello stesso programma.
 
 Un processo può inoltre contenere un'ambiente dove viene eseguito altro codice, Java Virtual Machine ne è un esempio.
-
+ emoria virtu
 ## Stato dei processi
 
 Un processo viene etichettato come `new` appena entra nel sistema, successivamente può entrare in diversi stati:
