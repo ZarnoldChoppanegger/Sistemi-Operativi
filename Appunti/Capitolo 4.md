@@ -5,7 +5,7 @@
 Un thread è la base d'uso della CPU, contiene un identificatore di thread (ID), un contatore di programma, un insieme di registri e uno stack. Condivide con gli altri thread dello stesso processo tutto lo spazio d'indirizzi (dati e risorse di sistema). Un processo multithread è in grado di svolgere più compiti in maniera concorrente.
 
 ### Vantaggi
-
+ 
 1. **Tempi di risposta:** Rendere un processo multithread mi permette di continuare la sua esecuzione anche se una parte di esso è in attesa di un azione dell'utente o sta facendo un'operazione particolarmente lunga. Utile per le interfacce utente.
 2. **Condivisione delle risorse:** I thread per default condividono la memoria del processo a cui appartengono, è utile perché si possono avere molti thread di attività diverse ma tutte nello stesso spazio d'indirizzi.
 3. **Economia:** C'è meno overhead nel creare thread e gestirne i cambi di contesto che farlo direttamente con i processi.
