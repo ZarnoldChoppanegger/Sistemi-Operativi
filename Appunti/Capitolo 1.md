@@ -22,7 +22,7 @@ Per questo motivo vengono distinte due modalità durante l'esecuzione di un prog
 
 Il sistema operativo ha bisogno di introdurre degli interruput ogni tot di tempo per terminare le istruzioni utente ed eseguire quelle kernel in modo da mantenere in vita il sistema.
 
-## Sistemi Batch
+## Sistemi Batch 
 
 > Un sistema batch è un modo per gestire le operazioni di calcolo in un sistema.
 
