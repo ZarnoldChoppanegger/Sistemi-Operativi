@@ -36,7 +36,7 @@ Ogni livello è un sottoinsieme di quello sopra. Facendo così:
 
 Pensato tramite i principi della programmazione Object Oriented. Kernel modulare:
 
-1. Oggetti.
+1. Oggetti. 
 2. Interfacce.
 3. Collegamenti dinamici fra gli oggetti.
 
