@@ -45,7 +45,7 @@ Con l'ultimo non si avranno mai sezioni critiche visto che i processi non posson
 
 ## Soluzione di Peterson
 
-Una classica empsoluzione per il problema della sezione critica è la soluzione di **Peterson**. È limitata a due soli processi, Pi e Pj. Questa soluzione richide che i processi condividano due dati:
+Una classica soluzione per il problema della sezione critica è la soluzione di **Peterson**. È limitata a due soli processi, Pi e Pj. Questa soluzione richide che i processi condividano due dati:
 
 * `int turn;`
 * `boolean flag[2];`
@@ -66,6 +66,53 @@ do {
 ```
 
 Da questo codice è facile capire che tutte e tre le condizioni di sezione critica sono soddisfatte.
+
+## Algoritmo del panettiere (Baker)
+
+L' algoritmo del panettiere é un'estensione a quello di Peterson per un numero N, con N >= 2, si processi.
+``` c++
+// variabili condivise
+bool flag[N];
+int turn[N]; // tutto inizializzato a 0
+
+// per l'i-esimo processo
+proc_i()
+{
+  // EPILOGO
+
+  // voglio prendere un numero per mettermi in fila
+  flag[i] = true;
+  
+  // prendo il mio numero
+  turn[i] = 1 + (*std::max_elem(std::begin(turn), 
+  				std::end(turn))); // un po' si STL non fa male...
+
+  // indico che non devo piú prendere il numero, sono giá in fila
+  flag[i] = false;
+  
+  for(int j = 0; j < N; ++j){
+    while(flag[j])
+      {
+	// aspetto finché tutti i processi che vogliono entrare
+	// in sezione critica non hanno preso il numero
+      }
+    
+    while(turn[j] != 0 &&
+	  std::make_pair(turn[j], j) < std::make_pair(turn[i], i))
+      {
+	// turn[j] != 0, significa che j ha il numero
+	// std::make_pair(turn[j], j) < std::make_pair(turn[i], i), significa:
+	// nel caso j abbia il mio stesso numero, vedo se é arrivato prima di me,
+	// nel qual caso lo lascio passare e aspetto che finisca
+      }
+  }
+
+  // esegue sezione critica
+
+  // ESORDIO
+  turn[i] = 0;
+}
+```
 
 ## Hardware per la sincronizzazione
 
