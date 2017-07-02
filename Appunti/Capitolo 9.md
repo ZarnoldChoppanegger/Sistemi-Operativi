@@ -86,3 +86,72 @@ Questo algoritmo sostituisce la pagina che non è stata usata per più tempo, è
 * **Stack:** Un altro metodo prevere l'implementazione di uno stack che contiene i numeri delle pagine e ogni volta che faccio riferimento a una di quelle pagine essa viene spostata in cima allo stack, facendo così ho la pagina meno usata sempre alla fine dello stack.
 
 Né LRU né OPT soffrono dell'anomalia di Belady e appartengono entrambi alla famiglia degli **algoritmi a stack** ovvero un algoritmo per il quale è possibile mostrare che l'insieme delle pagine in memoria per *n* frame è sempre un *sottoinsieme* dell'insieme delle pagine che dovrebbero essere in memoria per *n* + 1 frame.
+
+### Sostituzione delle pagine per approssimazione a LRU
+
+Pochi sistemi di calcolo forniscono l'hardware per l'implementazione della sostituzione LRU, tuttavia si può comunque ottenere un effetto simile utilizzando un **bit di riferimento**. Questo bit, associato a ogni pagina, se impostato a 1 indica che la pagina è stata riferita da qualche parte, viceversa se impostato a 0. Inizialmente il sistema operativo setta tutti i bit di riferimento a 0, dopo un po' di tempo in esecuzione è facile individuare le pagine che sono o meno state usate, purtroppo però non viene definito l'*ordine* con il quale sono state usate.
+
+#### Algoritmo con bit supplementari di riferimento
+
+È possibile conservare una tabella di, per esempio un byte, per ogni pagina. In questa tabella viene registrata la storia di utilizzo della pagina, poiché un byte corrisponde a 8 bit avrò inizialmente una pagina con i bit a 00000000, se uso la pagina la tabella sarà 10000000, se la riuso subito dopo sarà 11000000, se invece ne uso un'altra sarà 01100000. Quindi una pagina con i bit 11000100 è stata usata più recentemente di una pagina con i bit 01110111. 
+
+Il numero di bit dipende dall'hardware, nel caso limite si ha a disposizione un solo bit e in quel caso l'altoritmo è noto come **algoritmo dell'orologio (o della seconda chance)**.
+
+#### Algoritmo dell'orologio
+
+È un algoritmo di tipo FIFO (quindi soffre dell'anomalia di Belady). Funziona così:
+
+* Scorro la coda in cerca di una pagina che abbia il bit di riferimento impostato a 0, quella sarà la pagina scelta come vittima. Durante la ricerca le pagine che hanno bit a 1 vengono settate a 0 e spostate all'inizio della coda (gli si da una **seconda chance**). Le pagine che hanno ricevuto una seconda chance non vengono mai sostituite finché tutte le altre pagine siano state sostituite, inoltre una pagina che viene usata spesso non viene mai sostituita.
+
+#### Algoritmo dell'orologio migliorato
+
+Uguale al primo solo che non si controlla solo il bit di riferimento ma anche quello di modifica, si vengono a formare quindi della classi in base alle combinazioni di questa coppia:
+
+* (0,0) né recentemente usate né modificata -> best case.
+* (1,0) recentemente usata ma non modificata -> good case, non devo salvare niente nella memoria ma sarà probabilmente riusata a breve.
+* (0,1) recentemente modificata ma non usata -> not so good case, devo salvare il contenuto nuovo in memoria.
+* (1,1) sia usata che modificata -> worst case, devo salvarla in memoria e probabilmente sarà riusata a breve.
+
+Scelgo quindi la prima pagina che si trova nella classe migliore non vuota. Con questo algoritmo ho meno utilizzo di I/O rispetto all'algoritmo dell'orologio base.
+
+## Allocazione frame
+
+**Strategia di base:** al processo utente si assegna qualsiasi frame libero.
+
+Deve però essere stabilito un numero minimo di frame da assegnare ai processi in maniera tale da permettergli il riavvio dell'istruzione in caso di page fault, esso è definito dall'architettura del calcolatore (si sceglie in base all'istruzione più costosa).
+
+### Algoritmi di allocazione
+
+Abbiamo due tipi di allocazione:
+
+* **Allocazione uniforme:** Considerati *m* frames e *n* processi, per ogni processo si allocano *m*\/*n* processi.
+* **Allocazione proporzionale:** Considerati *m* frames, *Si* le pagine di un singolo processo e *S* che è la somma di tutte le pagine di ogni processo nel sistema, si alloca per ogni processo *Si*\/*S* x *m*.
+
+### Allocazione globale e locale
+
+Nel caso ho più processi che si contegono per l'ottenimento di frames gli algoritmi di sostituzione delle pagine si dividono in due categorie: **sostituzione globale** e **sostituzione locale**.
+
+La sostituzione globale permette di assegnare al processo richiedente frames che appartengono ad altri processi, rendendo incontrollabile il tasso di page fault.
+La sostituzione locale permette di usare frames che sono nell'insieme dei frames assegnati a quel processo.
+
+## Trashing
+
+>Quando tutti i frame sono occupati e un processo ne richiede uno inizia un loop di paginazioni, questa situazione è chiamata **trashing**.
+
+Il trashing causa notevoli problemi di prestazioni in quanto fa lavorare poco la CPU e, accorgendosi di questo, il sistema aumenta il grado di multiprogrammazione rendendo ancora più grave il trashing e così via. Per risolvere questo problema è quindi necessario *ridurre* il grado di multiprogrammazione.
+
+Il trashing si può limitare utilizzando la sostituzione locale, oltre a questo è necessario verificare quanti frame servano ad un processo e l'approccio più usato è quello del **working-set**. 
+
+Questo approccio definisce il modello di località del processo che consiste nell'insieme di pagine usate attivamente (e insieme) da quel processo.
+
+### Modello del working-set
+
+Usa un paramtetro *Delta* per definire la finestra del working-set ovvero la quantità di riferimenti di memoria che fa un processo. Se *Delta* è troppo grande può sovrapporre più località, se è troppo piccol può non contenerne nemmeno una.
+
+Una volta stabilito *Delta* il sistema operativo controlal il working set di ogni processo e gli assegna un numero di frame sufficiente, rispetto alle dimensioni del suo working-set-. Una volta assegnati i frame, se quelli liberi sono sufficienti viene eseguito un altro processo. Questa strategia impedisce il trashing.
+
+### Frequenza page fault
+
+Un'altra strategia per evitare trashing è quella della frequenza dei page fault. 
+
+Se la frequenza dei page fault è eccessiva il processo necessita più frames, se è molto bassa il processo necessita meno frames. Si fissa quindi un limite superiore e inferiore per la frequenza di page fault su quel processo. Se la frequenza supera il limite superiore viene aggiunto un frame al processo, se supera il limite inferiore viene tolto un frame al processo. Se la frequenza aumenta e non ci sono frame libero il processo viene sospeso e i frame che libera ripartiti agli altri processi.
