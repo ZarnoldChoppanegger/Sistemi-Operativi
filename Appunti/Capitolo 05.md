@@ -429,4 +429,46 @@ estrai(elem) { // Metodo del monitor implementato in automatico
 }
 
 ```
+### Filosofi con stato
+
+Ogni filosofo può trovarsi in 3 stati diversi: pensa, affatamo, mangia.
+
+Posso realizzarlo tramite un'array di semafori (uno per ogni filosofo) e un semaforo *s* (inizzializzato a 1) che mi garantisce la mutua esclusione. Questa variante permette a un filosofo di prendere le bacchette solo se sono entrambe libere (e quindi solo se nessuno dei due filosofi accanto sta mangiando).
+
+Il flusso di esecuzione è questo:
+
+```c#
+pensa;
+prende(i);
+mangia;
+posa(i);
+
+void prende(int i)
+{
+  wait(s);                 // entro in sezione critica
+  stato[i] = affamato;
+  test(i);                 // controlla se i filosofi adiacenti stiano mangiando
+  signal(s);               // esco dalla sezione critica
+  wait(S[i]);
+}
+
+void test(int i)
+{
+  if((stato[i] == affamato) && (stato[(i+1)%5] != mangia) && (stato[(i+4)%5] != mangia)) 
+  {
+    stato[i] = mangia;
+    signal(S[i]);
+  }
+}
+
+void posa(int i)
+{
+  wait(s);           // Eseguito in mutua esclusione
+  stato[i] = pensa;
+  test((i+1)%5);     // Controllo se almeno un filosofo a destra o a sinistra è affamato
+  test((i+4)%5);     // e in caso positivo faccio posare 
+  signal(s);         // Eseguito in mutua esclusione
+}
+```
+Con questa varniante non ho né **deadlock** né **stalli**.
 
