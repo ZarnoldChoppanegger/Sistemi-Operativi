@@ -185,8 +185,8 @@ Lo **spinlock** permette di non avere *context switch* quindi è utile se si pre
 ``` c#
 wait(S)
 {
-  while(S <= 0)
-   ; // Attendo
+  if(S == 0)
+   // sospendo il processo
   S--;
 }
 ```
