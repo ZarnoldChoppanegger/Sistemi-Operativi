@@ -45,7 +45,25 @@ Quello più usato è quello con il limite dove scelgo una base che indica l'iniz
 
 > Tutta l'informazione dei programmi è memorizzata in indirizzi consecutivi (sia logici che fisici)
 
-Uno dei metodi più semplici per l'allocazione della memoria è quello di dividere in più partizioni uguali la memoria e ogni partizione dovrà contenere un solo programma, viene chiamato **metodo delle partizioni multiple**. 
+Uno dei metodi più semplici per l'allocazione della memoria è quello di dividere in più partizioni uguali la memoria e ogni partizione dovrà contenere un solo programma, viene chiamato **metodo a partizione fissa**.
+
+**Vantaggi**
+* Il carico di lavoro svolto dal sistema operativo è minore.
+
+**Svantaggi**
+* Il numero massimo di processi che possono essere allocati in memoria è prefissato.
+* Si ha uno spreco di memoria perché un programma di solito ha dimensioni minori di quelle della partizione e lo spazio avanzato non può però essere utilizzata da un altro programma.
+* Il programma può essere di dimensioni maggiori della partizione.
+
+### Metodo a partizione variabile
+
+Con il metodo a partizioni variabili mentre  un programma viene eseguito vengono create le partizioni.
+
+Se si liberano due partizioni vicine possono essere occupate entrambe dallo stesso programma anche se non viene occupato tutto lo spazio.
+
+**Vantaggi**
+* Non c’è  un numero fisso di partizioni.
+* Ogni partizione ha dimensioni uguali al programma. Dunque non c’è uno spreco di memoria.
 
 Un processo occupa una parte di memoria quando viene caricato e quando finisce lascia quella memoria libera per altri processi, continuando con questo passo avrò la memoria con fette di spazio libero abbastanza piccole da non poter essere utilizzate per caricarci programmi (quindi ho spreco di spazio), questo problema viene chiamato **frammentazione esterna** e si risolve con la **compattazione**.
 
