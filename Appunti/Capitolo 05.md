@@ -371,7 +371,7 @@ Per risolvere questo **deadlock** vengono proposte due soluzioni: quella con il 
 ``` c#
 do {
   wait(chopstick[i]);
-  if(chopstick[i + 1 % 5] == 1)
+  if(chopstick[i + 1 % 5] == 0)
     signal(chopstick[i])
   wait(chopstick[i + 1 % 5]);
 }
@@ -470,5 +470,5 @@ void posa(int i)
   signal(s);         // Eseguito in mutua esclusione
 }
 ```
-Con questa varniante non ho né **deadlock** né **stalli**.
+Con questa varniante non ho né **deadlock** né **starvation**.
 
