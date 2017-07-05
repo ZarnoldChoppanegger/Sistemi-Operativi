@@ -449,7 +449,8 @@ void prende(int i)
   stato[i] = affamato;
   test(i);                 // controlla se i filosofi adiacenti stiano mangiando
   signal(s);               // esco dalla sezione critica
-  wait(S[i]);
+  if(stato[i] != mangia)
+    wait(S[i]);
 }
 
 void test(int i)
