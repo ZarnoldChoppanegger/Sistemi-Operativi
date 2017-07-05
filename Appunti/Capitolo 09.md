@@ -6,7 +6,7 @@
 
 La memoria virtuale consente una diversa percezione della memoria fisica da parte dell'utente, permette inoltre di eseguire programmi che si trovano solo parzialmente nella memoria centrale dando così diversi benefici:
 
-* Un programma non è più involato alla memoria fisica disponibile.
+* Un programma non è più vincolato alla memoria fisica disponibile.
 * Poichè ogni programma occupa meno memoria possono essere caricati più programmi aumentanto la concorrenza e l'utilizzo della CPU.
 * Poichè i programmi non vengono caricati del tutto servono meno operazioni di I/O quindi i programmi sono eseguiti più velocemente.
 
