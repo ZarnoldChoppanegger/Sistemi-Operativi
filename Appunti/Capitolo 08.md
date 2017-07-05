@@ -100,7 +100,7 @@ Ogni indirizzo generato dalla CPU è composto dal numero di pagina e dal suo off
 
 ### Implementazione hardware della tabella delle pagine
 
-Posso implementare facilmente la tabella delle pagine tramite dei registri (quindi memorizzarla li), è incredibilmente efficiente ma mi permette di avere un numero di elementi molto basso (~256). Viene quindi inserita nella memoria centrale e si crea un **registro di base della tabella delle pagine** che punta direttamente ad essa, il problema è che ogni accesso in memoria mi richiede 2 accessi in memoria (uno per ritrovare l'elemento nella tabella delle pagine e uno per accedere all'elemento stesso).
+Posso implementare facilmente la tabella delle pagine tramite dei registri (quindi memorizzarla li), è incredibilmente efficiente ma mi permette di avere un numero di elementi molto basso (~256). Viene quindi inserita nella memoria centrale e si crea un **registro di base della tabella delle pagine** che punta direttamente ad essa, il problema è che ogni volta che mi serve una pagina dovrò fare 2 accessi in memoria (uno per ritrovare l'indice nella tabella delle pagine e uno per accedere alla pagina stessa).
 
 Posso risolvere questo problema attraverso il **translation look-aside buffer** (TLB). Consiste in una memoria associativa (quindi coppie chiave->valore) ad alta velocità. Se cerco la pagina P, essa verrà ricerata parallelamente all'interno di questa memoria, se esiste una corrispondenza (hit) la cache da la pagina e ho un solo accesso in memoria, se non esiste corrispondenza (miss) cerco P nella tabella delle pagine e la restituisce (quindi due accessi in memoria). 
 
