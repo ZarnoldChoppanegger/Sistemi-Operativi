@@ -94,7 +94,7 @@ Un altro metodo che mi permette di allocare memoria non contiguamente è quello 
 
 Il metodo principale per implementare la paginazione consiste nel dividere la memoria fisica in blocchi di dimensione fissa detti **frame** e suddividere la memoria logica in blocchi fissi detti **pagine**
 
-Ogni indirizzo generato dalla CPU è composto dal numero di pagina e dal suo offset di pagina. Il numero di pagina funge da indice nella **tabella delle pagina** che contiene tutti gli indirizzi base della memoria fisica di ogni pagina alla quale verrano combinati gli offset per ottenere l'indirizzo logico.
+Ogni indirizzo generato dalla CPU è composto dal numero di pagina e dal suo offset di pagina. Il numero di pagina funge da indice nella **tabella delle pagine** che contiene tutti gli indirizzi base della memoria fisica di ogni pagina alla quale verrano combinati gli offset per ottenere l'indirizzo fisico.
 
 È presente anche una **tabella dei frame** che tiene traccia di tutti i frame allocati (e cosa allocano) e quelli non allocati.
 
