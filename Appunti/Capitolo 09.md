@@ -142,7 +142,7 @@ Il trashing causa notevoli problemi di prestazioni in quanto fa lavorare poco la
 
 Il trashing si può limitare utilizzando la sostituzione locale, oltre a questo è necessario verificare quanti frame servano ad un processo e l'approccio più usato è quello del **working-set**. 
 
-Questo approccio definisce il modello di località del processo che consiste nell'insieme di pagine usate attivamente (e insieme) da quel processo.
+Questo approccio definisce il modello di località del processo. Un processo, durante la sua esecuzione fa riferimento, per un periodo di tempo, sempre alle stesse pagine. L'insieme di queste pagine in quel periodo di tempo viene chiamato **località** del processo.
 
 ### Modello del working-set
 
