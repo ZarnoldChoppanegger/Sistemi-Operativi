@@ -142,13 +142,15 @@ Il trashing causa notevoli problemi di prestazioni in quanto fa lavorare poco la
 
 Il trashing si può limitare utilizzando la sostituzione locale, oltre a questo è necessario verificare quanti frame servano ad un processo e l'approccio più usato è quello del **working-set**. 
 
-Questo approccio definisce il modello di località del processo. Un processo, durante la sua esecuzione fa riferimento, per un periodo di tempo, sempre alle stesse pagine. L'insieme di queste pagine in quel periodo di tempo viene chiamato **località** del processo.
+Questo approccio definisce il modello di località del processo. Un processo, durante la sua esecuzione fa riferimento, per un periodo di tempo, sempre alle stesse pagine. L'insieme di queste pagine in quel periodo di tempo viene chiamato **località** del processo. Se assegnamo ad un processo i frames che sono necessari per soddisfare la località corrente, il processo non andrà mai in thrashing.
 
 ### Modello del working-set
 
-Usa un paramtetro *Delta* per definire la finestra del working-set ovvero la quantità di riferimenti di memoria che fa un processo. Se *Delta* è troppo grande può sovrapporre più località, se è troppo piccol può non contenerne nemmeno una.
+È basato sul concetto di località Usa un paramtetro *Delta* per definire la lunghezza della finestra del working-set ovvero la quantità di riferimenti di memoria che fa un processo in una località. Se *Delta* è troppo grande può sovrapporre più località, se è troppo piccolo può non contenerne nemmeno una.
 
-Una volta stabilito *Delta* il sistema operativo controlal il working set di ogni processo e gli assegna un numero di frame sufficiente, rispetto alle dimensioni del suo working-set-. Una volta assegnati i frame, se quelli liberi sono sufficienti viene eseguito un altro processo. Questa strategia impedisce il trashing.
+Considerata *D* come la somma della grandezza di tutti i working set di ogni processo. Se *D* eccede il numero di frame disponibili allora c'è almeno un processo che è in thrashing, se *D* è abbastanza piccolo allora significa che posso inserire un altro processo in esecuzione.
+
+Una volta stabilito *Delta* il sistema operativo controlla il working set di ogni processo e gli assegna un numero di frame sufficiente, rispetto alle dimensioni del suo working-set. Questa strategia impedisce il trashing.
 
 ### Frequenza page fault
 
