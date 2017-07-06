@@ -134,9 +134,9 @@ Nel caso ho più processi che si contegono per l'ottenimento di frames gli algor
 La sostituzione globale permette di assegnare al processo richiedente frames che appartengono ad altri processi, rendendo incontrollabile il tasso di page fault.
 La sostituzione locale permette di usare frames che sono nell'insieme dei frames assegnati a quel processo.
 
-## Trashing
+## Thrashing
 
->Quando tutti i frame sono occupati e un processo ne richiede uno inizia un loop di paginazioni, questa situazione è chiamata **trashing**.
+>Quando un processo ha allocati *n* frames ma per la sua esecuzione ne sono necessari *n* + 1, inizia un susseguirsi di page fault per far eseguire il processo. Quando un processo spende più tempo a risolvere page fault che a essere eseguito si dice che è in **thrashing**.
 
 Il trashing causa notevoli problemi di prestazioni in quanto fa lavorare poco la CPU e, accorgendosi di questo, il sistema aumenta il grado di multiprogrammazione rendendo ancora più grave il trashing e così via. Per risolvere questo problema è quindi necessario *ridurre* il grado di multiprogrammazione.
 
