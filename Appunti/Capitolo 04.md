@@ -26,3 +26,7 @@ Mette in orrispondenza un thread a livello utente a un thread a livello kernel. 
 #### Molti a Molti
 
 Mette in corrispondenza più thread a livello utente con più thread a livello kernel. Questo modello non ha alcuno dei difetti sopra elencati per gli alrtri modelli. I programmatori possono creare tutti i thread che ritengono necessari.
+
+### Differenza tra thread e processi
+
+I processi sono, di solito, indipendenti tra loro. I thread di un processo invece condividono tutto lo spazio di indirizzi del processo a cui sono associati. Inoltre la creazione di un thread è incredibilmente meno onerosa della creazione di un nuovo processo.
