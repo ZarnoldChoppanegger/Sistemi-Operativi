@@ -5,9 +5,9 @@
 
 Si può avere, in un sistema, una situazione di stallo solo se si verificano contemporaneamente queste quattro condizioni:
 
-* **Mutua escluzione:** almeno una risorsa deve essere non condivisibile e quindi utilizzabile da un solo processo per volta.
+* **Mutua esclusione:** almeno una risorsa deve essere non condivisibile e quindi utilizzabile da un solo processo per volta.
 * **Possesso e attesa:** un processo deve essere in possesso di una risorsa e, simultaneamente, essere in richiesta per un'altra.
-* **Assenza di prelazione:** si presume che un processo non possa essere interroto e quindi debba rilasciare la risorsa volontariamente.
+* **Assenza di prelazione:** si presume che un processo non possa essere interrotto e quindi debba rilasciare la risorsa volontariamente.
 * **Attesa circolare:** dato un insieme [P1,---,Pn] di processi, ogni processo deve attendere una risorsa che è in uso dal processo successivo a lui.
 
 ### Grafo di assegnazione delle risorse
