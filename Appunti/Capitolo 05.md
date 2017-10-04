@@ -473,3 +473,42 @@ void posa(int i)
 ```
 Con questa varniante non ho né **deadlock** né **starvation**.
 
+## Il barbiere sonnolento
+Vi é un barbiere con una sola postazione di lavoro (quindi puó servire un solo cliente alla volta), e un numero limitato di sedie.
+Se non ci sono clienti, il barbiere si addormenta. Appena un cliente entra, questo sveglia il barbiere. Quando arrivano altri clienti, questi attendono il loro turno sulle sedie disponibili; se non ci sono sedie disponibili, il cliente se ne va.
+Questo problema é utilizzato per ridurre il periodo di lavoro dei server (il barbiere), che deve offrire dei servizi a dei client.
+
+```c++
+int sedie = N;
+int in_attesa = 0;
+
+sem mutex = 1;
+sem clienti = 0;
+sem barbiere = 0;
+
+barbiere(){
+  while(true){
+    clienti.down(); // se non ci sono clienti dormi
+    
+    mutex.down();
+    --in_attesa; 
+    barbiere.up();
+    mutex.up();
+    // taglia
+  }
+}
+
+cliente(){
+  mutex.down();
+  if(in_attesa < sedie){ // ci sono posti disponibili?
+    ++in_attesa;
+    clienti.up(); // sveglia il barbiere se dorme
+    mutex.up();
+    barbiere.down(); // attendo che il barbiere sia disponibile
+    //su poltrona
+    }
+    
+  else mutex.up();
+}
+```
+
